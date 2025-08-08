@@ -13,7 +13,7 @@ export const createTasks = async (req, res) => {
         let {title, description, isComplete} = req.body;
 
         //Validaciones del titulo
-        let titleUnico = await tasksModel.findOne({ where: { title } })
+        let titleUnico = await Task.findOne({ where: { title } })
         if (titleUnico) {
             return res.status(400).json({ message: "Error: Este título ya se encuentra registrado" })
         }
@@ -39,7 +39,7 @@ export const createTasks = async (req, res) => {
             return res.status(400).json({ message: "Error: Campo isComplete debe ser de tipo booleano (true o false)" })
         }
 
-        const taskCreated = await tasksModel.create(req.body)
+        const taskCreated = await Task.create(req.body)
         res.status(201).json(taskCreated)
     } catch (err) {
         res.status(500).json({ message: 'Error del lado interno del servidor: ', error: err.message })
@@ -47,11 +47,11 @@ export const createTasks = async (req, res) => {
 }
 
 //Traer tarea por ID
-export const getTaskByID = async (req, res) => {
+export const getTasksByID = async (req, res) => {
     const { id } = req.params;
 
     try {
-        const listedTaskID = await tasksModel.findByPk(id);
+        const listedTaskID = await Task.findByPk(id);
         if (listedTaskID) {
             res.status(200).json(listedTaskID);
         } else {
@@ -63,14 +63,14 @@ export const getTaskByID = async (req, res) => {
 };
 
 //Actualizar Tarea
-export const updateTask = async (req, res) => {
+export const updateTasks = async (req, res) => {
     const { id } = req.params;
     let {title, description, isComplete} = req.body;
 
     //Validaciones para "title"
-    const titleActual = await tasksModel.findByPk(id);
+    const titleActual = await Task.findByPk(id);
     if (titleActual.title !== title) {
-        let titleUnico = await tasksModel.findOne({ where: { title } })
+        let titleUnico = await Task.findOne({ where: { title } })
         if (titleUnico) {
             return res.status(400).json({ message: titleActual })
         }
@@ -98,7 +98,7 @@ export const updateTask = async (req, res) => {
     }
 
     try {
-        const findTask = await tasksModel.findByPk(id);
+        const findTask = await Task.findByPk(id);
 
         if (findTask) {
             await findTask.update({title, description, isComplete}, {where: {id}});
@@ -112,10 +112,10 @@ export const updateTask = async (req, res) => {
 };
 
 //Eliminar una Tarea
-export const deleteTask = async (req, res) => {
+export const deleteTasks = async (req, res) => {
     const { id } = req.params;
     try {
-        const findTask = await tasksModel.findByPk(id);
+        const findTask = await Task.findByPk(id);
         if (findTask) {
             await findTask.destroy()
             res.json({ message: 'Tarea eliminada exitosamente' })

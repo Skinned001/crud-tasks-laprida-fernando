@@ -1,10 +1,10 @@
 import express from 'express';
-import routerTask from './src/routes/task_routes';
-import routerUser from './src/routes/user_routes';
-import { connectDB } from './src/config/database';
+import routerTask from './src/routes/task_routes.js';
+import routerUser from './src/routes/user_routes.js';
+import { connectDB } from './src/config/database.js';
 
 const app = express();
-const PORT = 3000;
+const PORT = 3306;
 
 app.use(express.json());
 app.use("/api",routerTask);
