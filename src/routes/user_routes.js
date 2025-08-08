@@ -7,7 +7,7 @@ import {
     deleteUser,
 } from '../controllers/user_controller.js';
 
-const router = Router();
+const routerUser = Router();
 
 routerUser.post('/users:', createUser);
 routerUser.get('/users', getAllUsers);
@@ -15,4 +15,4 @@ routerUser.get('/users/:id', getUserByID);
 routerUser.put('/users/:id', updateUser);
 routerUser.delete('/users/:id', deleteUser);
 
-export default router;
+export default routerUser;
