@@ -4,7 +4,7 @@ import routerUser from './src/routes/user_routes.js';
 import { connectDB } from './src/config/database.js';
 
 const app = express();
-const PORT = 3306;
+const PORT = 3000;
 
 app.use(express.json());
 app.use("/api",routerTask);
