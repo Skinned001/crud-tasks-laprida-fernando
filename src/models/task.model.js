@@ -1,7 +1,7 @@
 import { sequelize } from '../config/database.js';
 import { DataTypes } from 'sequelize';
 
-export const Task = sequelize.define('Task', {
+export const TaskModel = sequelize.define('Task', {
   id: {
     type: DataTypes.INTEGER,
     autoIncrement: true,
@@ -19,5 +19,15 @@ export const Task = sequelize.define('Task', {
   isComplete: {
     type: DataTypes.BOOLEAN,
     defaultValue: false
+  },
+},
+  {
+    timestamps: false,
+    // createdAt: created_at,
   }
-});
+);
+
+// RELACIONES UNO A MUCHOS
+TaskModel.belongsTo(UserModel, { foreignKey: "user_id", as: "author" });
+
+UserModel.hasMany(TaskModel, { foreignKey: "user_id" });
