@@ -1,4 +1,4 @@
-import { Task } from "../models/task_model.js";
+import { TaskModel } from "../models/task.model.js";
 
 
 //Encontrar todas las tareas
@@ -42,7 +42,7 @@ export const createTasks = async (req, res) => {
                 statusCode: 400
             })
         }
-        const createNewTask = await Task.create(req.body)
+        const createNewTask = await TaskModel.create(req.body)
         res.status(200).json(createNewTask)
     } catch (error) {
         return res.status(500).json({ error: error.message })

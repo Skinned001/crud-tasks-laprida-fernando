@@ -1,10 +1,10 @@
-import { User } from "../models/user_model.js";
+import { UserModel } from "../models/user.model.js";
 
 // Crear un usuario
 export const createUser = async (req, res) => {
     const { name, email, password } = req.body
     try {
-        const checkIfEmailExists = await User.findOne({ where: { email: email } })
+        const checkIfEmailExists = await UserModel.findOne({ where: { email: email } })
         if (checkIfEmailExists) {
             return res.status(400).json({
                 message: "Error: Ese email ya existe",
@@ -29,7 +29,7 @@ export const createUser = async (req, res) => {
                 status: 400
             })
         }
-        const createNewUser = await User.create(req.body)
+        const createNewUser = await UserModel.create(req.body)
         res.status(200).json(createNewUser)
     } catch (error) {
         return res.status(500).json({ error: error.message })
@@ -38,7 +38,7 @@ export const createUser = async (req, res) => {
 
 //Conseguir todos los usarios
 export const getAllUsers = async (req, res) => {
-    const findAll = await User.findAll()
+    const findAll = await UserModel.findAll()
     res.status(200).json(findAll)
 }
 
@@ -54,7 +54,7 @@ export const getUserByID = async (req, res) => {
             })
         }
 
-        const findID = await User.findByPk(userID)
+        const findID = await UserModel.findByPk(userID)
 
         if (!findID) {
             return res.status(404).json({
@@ -99,7 +99,7 @@ export const updateUser = async (req, res) => {
         })
     }
     try {
-        const findID = await User.findByPk(userID)
+        const findID = await UserModel.findByPk(userID)
         if (!findID) {
             return res.status(404).json({
                 message: "Error: Ese ID no existe",
@@ -107,7 +107,7 @@ export const updateUser = async (req, res) => {
                 status: 404
             })
         }
-        const checkIfEmailExists = await User.findOne({ where: { email: email } })
+        const checkIfEmailExists = await UserModel.findOne({ where: { email: email } })
         if (checkIfEmailExists) {
             return res.status(400).json({
                 message: "Error: Ese usuario ya existe",
@@ -129,7 +129,7 @@ export const updateUser = async (req, res) => {
 //Borrar un usuario
 export const deleteUser = async (req, res) => {
     const userID = parseInt(req.params.id)
-    const findID = await User.findByPk(userID)
+    const findID = await UserModel.findByPk(userID)
     if (isNaN(userID)) {
         return res.status(400).json({
             message: "Error: El ID debe ser un número",
