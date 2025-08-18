@@ -2,6 +2,7 @@ import express from 'express';
 import { connectDB } from './src/config/database.js';
 import './src/models/task.model.js';
 import './src/models/user.model.js';
+<<<<<<< HEAD
 import './src/models/compras.models.js';
 import './src/models/estadisticas.model.js';
 import './src/models/user_compras.model.js';
@@ -10,6 +11,10 @@ import routerUser from './src/routes/user.routes.js';
 import routerCompras from './src/routes/compras.routes.js';
 import routerEstadisticas from './src/routes/compras.routes.js';
 
+=======
+import routerTask from './src/routes/task_routes.js';
+import routerUser from './src/routes/user_routes.js';
+>>>>>>> 2017aff9cd05611950ced933f265c5fe131676ee
 
 const app = express();
 const PORT = 3000;
