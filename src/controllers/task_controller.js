@@ -1,11 +1,27 @@
 import { TaskModel } from "../models/task.model.js";
 import { UserModel } from "../models/user.model.js";
 
-//Encontrar todas las tareas
-export const getAllTasks = async (req, res) => {
-    const getAll = await TaskModel.findAll();
-    res.json(getAll)
-    };
+
+// Obtener todas las tareas con el usuario que las creó
+export const getAllTasksWithUser = async (req, res) => {
+  try {
+    const tasks = await TaskModel.findAll({
+      include: [
+        {
+          model: UserModel,
+          as: "author", 
+          attributes: ["id", 
+            "name", 
+            "email"] 
+        }
+      ]
+    });
+
+    res.status(200).json(tasks);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
 
 //Crear una tarea
 export const createTasks = async (req, res) => {
