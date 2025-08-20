@@ -1,4 +1,5 @@
 import { UserModel } from "../models/user.model.js";
+import { TaskModel } from "../models/task.model.js";
 
 // Crear un usuario
 export const createUser = async (req, res) => {
@@ -36,11 +37,32 @@ export const createUser = async (req, res) => {
     }
 }
 
-//Conseguir todos los usarios
-export const getAllUsers = async (req, res) => {
-    const findAll = await UserModel.findAll()
-    res.status(200).json(findAll)
-}
+// Obtener todos los usuarios con sus tareas
+export const getAllUsersWithTasks = async (req, res) => {
+  try {
+    const users = await UserModel.findAll({
+      include: [
+        {
+          model: TaskModel,
+          as: "tasks", // Usando el alias de mi modelo en task.model.js
+          attributes: [
+            "id", 
+            "title", 
+            "description", 
+            "is_complete"] // campos que quieras mostrar de cada tarea
+        }
+      ],
+      attributes: [// campos del usuario que quieras mostrar
+        "id", 
+        "name", 
+        "email"] 
+    });
+
+    res.status(200).json(users);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
 
 //Obtener un usuario por ID
 export const getUserByID = async (req, res) => {
