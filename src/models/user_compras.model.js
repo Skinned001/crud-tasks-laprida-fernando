@@ -3,9 +3,7 @@ import { sequelize } from "../config/database.js";
 import { RoleModel } from "./compras.model.js";
 import { UserComprasModel } from "./user.model.js";
 
-export const UserComprasModel = sequelize.define(
-  "User_Compras",
-  {
+export const UserComprasModel = sequelize.define("User_Compras",  {
     id: {
       type: DataTypes.INTEGER,
       primaryKey: true,

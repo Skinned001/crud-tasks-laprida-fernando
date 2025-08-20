@@ -2,9 +2,7 @@
 import { DataTypes } from "sequelize";
 import { sequelize } from "../config/database.js";
 
-export const EstadisticasModel = sequelize.define(
-  "Estadisticas",
-  {
+export const EstadisticasModel = sequelize.define("Estadisticas", {
     id: {
       type: DataTypes.INTEGER,
       autoIncrement: true,
