@@ -2,7 +2,7 @@ import { Router } from 'express';
 import {
     createUser,
     getAllUsersWithTasks,
-    getUserByID,
+    getUserByIdWithTasks,
     updateUser,
     deleteUser,
 } from '../controllers/user_controller.js';
@@ -11,7 +11,7 @@ const routerUser = Router();
 
 routerUser.post('/users', createUser);
 routerUser.get('/users', getAllUsersWithTasks);
-routerUser.get('/users/:id', getUserByID);
+routerUser.get('/users/:id', getUserByIdWithTasks);
 routerUser.put('/users/:id', updateUser);
 routerUser.delete('/users/:id', deleteUser);
 

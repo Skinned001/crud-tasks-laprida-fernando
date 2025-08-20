@@ -39,58 +39,68 @@ export const createUser = async (req, res) => {
 
 // Obtener todos los usuarios con sus tareas
 export const getAllUsersWithTasks = async (req, res) => {
-  try {
-    const users = await UserModel.findAll({
-      include: [
-        {
-          model: TaskModel,
-          as: "tasks", // Usando el alias de mi modelo en task.model.js
-          attributes: [
-            "id", 
-            "title", 
-            "description", 
-            "is_complete"] // campos que quieras mostrar de cada tarea
-        }
-      ],
-      attributes: [// campos del usuario que quieras mostrar
-        "id", 
-        "name", 
-        "email"] 
-    });
-
-    res.status(200).json(users);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
+    try {
+        const users = await UserModel.findAll({
+            include: [
+                {
+                    model: TaskModel,
+                    as: "tasks", // Usando el alias de mi modelo en task.model.js
+                    attributes: [
+                        "id",
+                        "title",
+                        "description",
+                        "is_complete"] // campos que quieras mostrar de cada tarea
+                }
+            ],
+            attributes: [// campos del usuario que quieras mostrar
+                "id",
+                "name",
+                "email"]
+        });
+        res.status(200).json(users);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
 };
 
-//Obtener un usuario por ID
-export const getUserByID = async (req, res) => {
-    const userID = parseInt(req.params.id)
-    try {
-        if (isNaN(userID)) {
-            return res.status(400).json({
-                message: "Error: El ID debe ser un número",
-                error: "Bad request",
-                status: 400
-            })
-        }
-
-        const findID = await UserModel.findByPk(userID)
-
-        if (!findID) {
-            return res.status(404).json({
-                message: "Error: Ese ID no se ha encontrado",
-                error: "Not found",
-                status: 404
-            })
-        }
-        res.status(200).json(findID)
-    } catch (error) {
-        return res.status(500).json("Error: No se pudo encontrar el ID")
+// Obtener un usuario por ID con sus tareas
+export const getUserByIdWithTasks = async (req, res) => {
+    const userId = parseInt(req.params.id);
+    if (isNaN(userId)) {
+        return res.status(400).json({
+            message: "Error: El ID debe ser un número.",
+            error: "Bad Request",
+            statusCode: 400
+        });
     }
-
-}
+    try {
+        const user = await UserModel.findByPk(userId, {
+            include: [
+                {
+                    model: TaskModel,
+                    as: "tasks",
+                    attributes: ["id",
+                        "title",
+                        "description",
+                        "is_complete"]
+                }
+            ],
+            attributes: ["id",
+                "name",
+                "email"]
+        });
+        if (!user) {
+            return res.status(404).json({
+                message: "Error: Usuario no encontrado.",
+                error: "Not Found",
+                statusCode: 404
+            });
+        }
+        res.status(200).json(user);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+};
 
 //Actualizar un usuario
 export const updateUser = async (req, res) => {
