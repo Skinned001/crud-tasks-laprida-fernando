@@ -18,7 +18,7 @@ export const connectDB = async () => {
     console.log('>>> Conexión a la base de datos establecida correctamente.');
 
     // Crear tablas si no existen
-    await sequelize.sync({ force: true }); // force:true borra y recrea tablas
+    await sequelize.sync({ force: false }); // force:true borra y recrea tablas
     console.log('>>> Tablas sincronizadas correctamente.');
   } catch (error) {
     console.error('>>> Error al conectar a la base de datos:', error);

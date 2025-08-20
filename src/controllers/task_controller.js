@@ -1,53 +1,74 @@
 import { TaskModel } from "../models/task.model.js";
-
+import { UserModel } from "../models/user.model.js";
 
 //Encontrar todas las tareas
 export const getAllTasks = async (req, res) => {
-    const getAll = await Task.findAll();
+    const getAll = await TaskModel.findAll();
     res.json(getAll)
     };
 
-//Crear una tarea 
+//Crear una tarea
 export const createTasks = async (req, res) => {
-    const { title, description, isComplete } = req.body
+    const { title, description, is_complete, user_id } = req.body;
     try {
-        const checkIfTitleExists = await Task.findOne({ where: { title: title } })
+        // Validaciones
+        if (!title || !description || !user_id) {
+            return res.status(400).json({
+                message: "Error: Algunos campos están vacíos.",
+                error: "Bad request",
+                statusCode: 400
+            });
+        }
+
+        const checkIfTitleExists = await TaskModel.findOne({ where: { title } });
         if (checkIfTitleExists) {
             return res.status(400).json({
                 message: "Error: Esa tarea ya existe",
                 error: "Bad request",
                 statusCode: 400
-            })
+            });
         }
-        const titleLength = await title.length
-        const descriptionLength = await description.length
-        if (titleLength > 100 || descriptionLength > 100) {
+
+        if (title.length > 100 || description.length > 100) {
             return res.status(400).json({
                 message: "Error: Hay atributos que superan los 100 caracteres",
                 error: "Bad request",
                 statusCode: 400
-            })
+            });
         }
-        if (!title || !description) {
+
+        if (typeof is_complete !== "boolean") {
             return res.status(400).json({
-                message: "Error: Algunos campos están vacíos.",
+                message: "Error: is_complete debe ser booleano.",
                 error: "Bad request",
                 statusCode: 400
-            })
+            });
         }
-        if (typeof isComplete !== "boolean") {
-            return res.status(400).json({
-                message: "Error: isComplete debe ser booleano.",
-                error: "Bad request",
-                statusCode: 400
-            })
+
+        // Verificar que el usuario existe
+        const userExists = await UserModel.findByPk(user_id);
+        if (!userExists) {
+            return res.status(404).json({
+                message: "Error: Usuario no encontrado.",
+                error: "Not Found",
+                statusCode: 404
+            });
         }
-        const createNewTask = await TaskModel.create(req.body)
-        res.status(200).json(createNewTask)
+
+        // Crear la tarea vinculada al usuario
+        const createNewTask = await TaskModel.create({
+            title,
+            description,
+            is_complete,
+            user_id
+        });
+
+        res.status(201).json(createNewTask);
     } catch (error) {
-        return res.status(500).json({ error: error.message })
+        return res.status(500).json({ error: error.message });
     }
-}
+};
+
 
 //Traer tarea por ID
 export const getTasksByID = async (req, res) => {
@@ -61,7 +82,7 @@ export const getTasksByID = async (req, res) => {
             })
         }
 
-        const findID = await Task.findByPk(taskID)
+        const findID = await TaskModel.findByPk(taskID)
 
         if (!findID) {
             return res.status(404).json({
@@ -79,7 +100,7 @@ export const getTasksByID = async (req, res) => {
 //Actualizar Tarea
 export const updateTasks = async (req, res) => {
     const taskID = parseInt(req.params.id)
-    const { title, description, isComplete } = req.body
+    const { title, description, is_complete } = req.body
     const titleLength = await title.length
     const descriptionLength = await description.length
     if (titleLength > 100 || descriptionLength > 100) {
@@ -104,7 +125,7 @@ export const updateTasks = async (req, res) => {
         })
     }
     try {
-        const findID = await Task.findByPk(taskID)
+        const findID = await TaskModel.findByPk(taskID)
         if (!findID) {
             return res.status(404).json({
                 message: "Error: Ese ID no existe.",
@@ -112,14 +133,14 @@ export const updateTasks = async (req, res) => {
                 statusCode: 404
             })
         }
-        if (isComplete !== (true || false)) {
+        if (is_complete !== (true || false)) {
             return res.status(400).json({
-                message: "Error: isComplete debe ser booleano.",
+                message: "Error: is_complete debe ser booleano.",
                 error: "Bad request",
                 statusCode: 400
             })
         }
-        const checkIfTitleExists = await Task.findOne({ where: { title: title } })
+        const checkIfTitleExists = await TaskModel.findOne({ where: { title: title } })
         if (checkIfTitleExists) {
             return res.status(400).json({
                 message: "Error: Esa tarea ya existe",
@@ -127,7 +148,7 @@ export const updateTasks = async (req, res) => {
                 statusCode: 400
             })
         }
-        await findID.update({ title, description, isComplete })
+        await findID.update({ title, description, is_complete })
         res.status(200).json("Datos actualizados")
     } catch (error) {
         return res.status(500).json({
@@ -149,7 +170,7 @@ export const deleteTasks = async (req, res) => {
         })
     }
     try {
-        const findID = await Task.findByPk(taskID)
+        const findID = await TaskModel.findByPk(taskID)
         if (!findID) {
             return res.status(404).json({
                 message: "Error: Ese ID no existe.",

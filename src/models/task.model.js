@@ -19,7 +19,8 @@ export const TaskModel = sequelize.define('Task', {
   },
   is_complete: {
     type: DataTypes.BOOLEAN,
-    defaultValue: false
+    defaultValue: false,
+    allowNull: false
   },
 },
   {
@@ -30,5 +31,4 @@ export const TaskModel = sequelize.define('Task', {
 
 // RELACIONES UNO A MUCHOS
 TaskModel.belongsTo(UserModel, { foreignKey: "user_id", as: "author" });
-
 UserModel.hasMany(TaskModel, { foreignKey: "user_id" });
