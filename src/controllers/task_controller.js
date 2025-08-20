@@ -4,23 +4,23 @@ import { UserModel } from "../models/user.model.js";
 
 // Obtener todas las tareas con el usuario que las creó
 export const getAllTasksWithUser = async (req, res) => {
-  try {
-    const tasks = await TaskModel.findAll({
-      include: [
-        {
-          model: UserModel,
-          as: "author", 
-          attributes: ["id", 
-            "name", 
-            "email"] 
-        }
-      ]
-    });
+    try {
+        const tasks = await TaskModel.findAll({
+            include: [
+                {
+                    model: UserModel,
+                    as: "author",
+                    attributes: ["id",
+                        "name",
+                        "email"]
+                }
+            ]
+        });
 
-    res.status(200).json(tasks);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
+        res.status(200).json(tasks);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
 };
 
 //Crear una tarea
@@ -86,33 +86,43 @@ export const createTasks = async (req, res) => {
 };
 
 
-//Traer tarea por ID
-export const getTasksByID = async (req, res) => {
-    const taskID = parseInt(req.params.id)
-    try {
-        if (isNaN(taskID)) {
-            return res.status(400).json({
-                message: "Error: El ID debe ser un número.",
-                error: "Bad Request",
-                statusCode: 400
-            })
-        }
+// Obtener tarea por ID con el usuario que la creó
+export const getTaskByIdWithUser = async (req, res) => {
+  const taskID = parseInt(req.params.id);
 
-        const findID = await TaskModel.findByPk(taskID)
+  if (isNaN(taskID)) {
+    return res.status(400).json({
+      message: "Error: El ID debe ser un número.",
+      error: "Bad Request",
+      statusCode: 400
+    });
+  }
 
-        if (!findID) {
-            return res.status(404).json({
-                message: "Error: Ese ID no se ha encontrado",
-                error: "Not found",
-                statusCode: 404
-            })
+  try {
+    const task = await TaskModel.findByPk(taskID, {
+      include: [
+        {
+          model: UserModel,
+          as: "author", // coincide con el alias de belongsTo
+          attributes: ["id", "name", "email"] // campos que quieras mostrar
         }
-        res.status(200).json(findID)
-    } catch (error) {
-        return res.status(500).json("Error al encontrar el ID")
+      ]
+    });
+
+    if (!task) {
+      return res.status(404).json({
+        message: "Error: Tarea no encontrada",
+        error: "Not Found",
+        statusCode: 404
+      });
     }
 
-}
+    res.status(200).json(task);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
 //Actualizar Tarea
 export const updateTasks = async (req, res) => {
     const taskID = parseInt(req.params.id)
@@ -132,7 +142,7 @@ export const updateTasks = async (req, res) => {
             error: "Bad Request",
             statusCode: 400
         })
-    } 
+    }
     if (!title && !description) {
         return res.status(400).json({
             message: "Error: Algunos campos están vacíos.",
