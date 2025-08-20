@@ -35,7 +35,6 @@ export const createTasks = async (req, res) => {
                 statusCode: 400
             });
         }
-
         const checkIfTitleExists = await TaskModel.findOne({ where: { title } });
         if (checkIfTitleExists) {
             return res.status(400).json({
@@ -44,7 +43,6 @@ export const createTasks = async (req, res) => {
                 statusCode: 400
             });
         }
-
         if (title.length > 100 || description.length > 100) {
             return res.status(400).json({
                 message: "Error: Hay atributos que superan los 100 caracteres",
@@ -52,7 +50,6 @@ export const createTasks = async (req, res) => {
                 statusCode: 400
             });
         }
-
         if (typeof is_complete !== "boolean") {
             return res.status(400).json({
                 message: "Error: is_complete debe ser booleano.",
@@ -60,8 +57,9 @@ export const createTasks = async (req, res) => {
                 statusCode: 400
             });
         }
-
         // Verificar que el usuario existe
+        // Convertimos a número por si viene como string
+        const userIdInt = parseInt(user_id);
         const userExists = await UserModel.findByPk(user_id);
         if (!userExists) {
             return res.status(404).json({
@@ -70,7 +68,6 @@ export const createTasks = async (req, res) => {
                 statusCode: 404
             });
         }
-
         // Crear la tarea vinculada al usuario
         const createNewTask = await TaskModel.create({
             title,
@@ -78,7 +75,6 @@ export const createTasks = async (req, res) => {
             is_complete,
             user_id
         });
-
         res.status(201).json(createNewTask);
     } catch (error) {
         return res.status(500).json({ error: error.message });
@@ -88,39 +84,41 @@ export const createTasks = async (req, res) => {
 
 // Obtener tarea por ID con el usuario que la creó
 export const getTaskByIdWithUser = async (req, res) => {
-  const taskID = parseInt(req.params.id);
+    const taskID = parseInt(req.params.id);
 
-  if (isNaN(taskID)) {
-    return res.status(400).json({
-      message: "Error: El ID debe ser un número.",
-      error: "Bad Request",
-      statusCode: 400
-    });
-  }
-
-  try {
-    const task = await TaskModel.findByPk(taskID, {
-      include: [
-        {
-          model: UserModel,
-          as: "author", // coincide con el alias de belongsTo
-          attributes: ["id", "name", "email"] // campos que quieras mostrar
-        }
-      ]
-    });
-
-    if (!task) {
-      return res.status(404).json({
-        message: "Error: Tarea no encontrada",
-        error: "Not Found",
-        statusCode: 404
-      });
+    if (isNaN(taskID)) {
+        return res.status(400).json({
+            message: "Error: El ID debe ser un número.",
+            error: "Bad Request",
+            statusCode: 400
+        });
     }
 
-    res.status(200).json(task);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
+    try {
+        const task = await TaskModel.findByPk(taskID, {
+            include: [
+                {
+                    model: UserModel,
+                    as: "author", // 
+                    attributes: ["id",
+                        "name",
+                        "email"] // campos que quieras mostrar
+                }
+            ]
+        });
+
+        if (!task) {
+            return res.status(404).json({
+                message: "Error: Tarea no encontrada",
+                error: "Not Found",
+                statusCode: 404
+            });
+        }
+
+        res.status(200).json(task);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
 };
 
 //Actualizar Tarea
