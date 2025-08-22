@@ -1,9 +1,9 @@
 import { DataTypes } from "sequelize";
 import { sequelize } from "../config/database.js";
-import { RoleModel } from "./compras.model.js";
-import { UserComprasModel } from "./user.model.js";
+import { CompraModel } from "./compra.model.js";
+import { UserModel } from "./user.model.js";
 
-export const UserComprasModel = sequelize.define("User_Compras",  {
+export const UserCompraModel = sequelize.define("User_Compra",  {
     id: {
       type: DataTypes.INTEGER,
       primaryKey: true,
@@ -17,14 +17,14 @@ export const UserComprasModel = sequelize.define("User_Compras",  {
 );
 
 //RELACIONES
-UserModel.belongsToMany(RoleModel, {
-  through: UserRoleModel,
+UserModel.belongsToMany(CompraModel, {
+  through: UserCompraModel,
   foreignKey: "user_id",
-  as: "roles",
+  as: "compras",
 });
 
-RoleModel.belongsToMany(UserModel, {
-  through: UserRoleModel,
-  foreignKey: "role_id",
+CompraModel.belongsToMany(UserModel, {
+  through: UserCompraModel,
+  foreignKey: "compra_id",
   as: "users",
 });

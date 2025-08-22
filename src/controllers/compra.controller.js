@@ -1,9 +1,9 @@
-import { ComprasModel } from "../models/compras.models.js";
+import { CompraModel } from "../models/compra.model.js";
 
 // Obtener todas las compras
 export const getAllCompras = async (req, res) => {
     try {
-        const compras = await ComprasModel.findAll();
+        const compras = await CompraModel.findAll();
         res.status(200).json(compras);
     } catch (error) {
         res.status(500).json({ error: error.message });
@@ -11,7 +11,7 @@ export const getAllCompras = async (req, res) => {
 };
 
 // Crear una nueva compra
-export const createCompras = async (req, res) => {
+export const createCompra = async (req, res) => {
     const { monto, tipo, is_paid } = req.body;
     try {
         // Validaciones
@@ -36,7 +36,7 @@ export const createCompras = async (req, res) => {
                 statusCode: 400
             });
         }
-        const newCompra = await ComprasModel.create({
+        const newCompra = await CompraModel.create({
             monto,
             tipo,
             is_paid
@@ -58,7 +58,7 @@ export const getComprassByID = async (req, res) => {
         });
     }
     try {
-        const compra = await ComprasModel.findByPk(compraID);
+        const compra = await CompraModel.findByPk(compraID);
         if (!compra) {
             return res.status(404).json({
                 message: "Error: Compra no encontrada.",
@@ -84,7 +84,7 @@ export const updateCompras = async (req, res) => {
         });
     }
     try {
-        const compra = await ComprasModel.findByPk(compraID);
+        const compra = await CompraModel.findByPk(compraID);
         if (!compra) {
             return res.status(404).json({
                 message: "Error: Registro de compra no encontrada.",
@@ -126,7 +126,7 @@ export const updateCompras = async (req, res) => {
 };
 
 // Eliminar compra
-export const deleteCompras = async (req, res) => {
+export const deleteCompra = async (req, res) => {
     const compraID = parseInt(req.params.id);
 
     if (isNaN(compraID)) {
@@ -138,7 +138,7 @@ export const deleteCompras = async (req, res) => {
     }
 
     try {
-        const compra = await ComprasModel.findByPk(compraID);
+        const compra = await CompraModel.findByPk(compraID);
         if (!compra) {
             return res.status(404).json({
                 message: "Error: Compra no encontrada.",

@@ -82,10 +82,9 @@ export const createTasks = async (req, res) => {
 };
 
 
-// Obtener tarea por ID con el usuario que la creó
+// Obtener tarea por ID junto al usuario que la creo
 export const getTaskByIdWithUser = async (req, res) => {
     const taskID = parseInt(req.params.id);
-
     if (isNaN(taskID)) {
         return res.status(400).json({
             message: "Error: El ID debe ser un número.",
@@ -93,7 +92,6 @@ export const getTaskByIdWithUser = async (req, res) => {
             statusCode: 400
         });
     }
-
     try {
         const task = await TaskModel.findByPk(taskID, {
             include: [
@@ -106,7 +104,6 @@ export const getTaskByIdWithUser = async (req, res) => {
                 }
             ]
         });
-
         if (!task) {
             return res.status(404).json({
                 message: "Error: Tarea no encontrada",
@@ -114,14 +111,13 @@ export const getTaskByIdWithUser = async (req, res) => {
                 statusCode: 404
             });
         }
-
         res.status(200).json(task);
     } catch (error) {
         res.status(500).json({ error: error.message });
     }
 };
 
-//Actualizar Tarea
+//Actualizar tarea
 export const updateTasks = async (req, res) => {
     const taskID = parseInt(req.params.id)
     const { title, description, is_complete } = req.body

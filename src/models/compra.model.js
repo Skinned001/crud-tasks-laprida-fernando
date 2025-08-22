@@ -2,7 +2,7 @@ import { DataTypes } from "sequelize";
 import { sequelize } from "../config/database.js";
 import { toDefaultValue } from "sequelize/lib/utils";
 
-export const ComprasModel = sequelize.define("Compras", {
+export const CompraModel = sequelize.define("Compra", {
   id: {
     type: DataTypes.INTEGER,
     autoIncrement: true,
