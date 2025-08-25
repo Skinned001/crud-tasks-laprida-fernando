@@ -1,4 +1,5 @@
 import { CompraModel } from "../models/compra.model.js";
+import { UserModel } from "../models/user.model.js";
 
 // Obtener todas las compras
 export const getAllCompras = async (req, res) => {
@@ -10,25 +11,29 @@ export const getAllCompras = async (req, res) => {
     }
 };
 
-// Crear una nueva compra
+
+// Crear una nueva compra y asociarla al usuario mediante la tabla intermedia
 export const createCompra = async (req, res) => {
-    const { monto, tipo, is_paid } = req.body;
+    const { monto, tipo, is_paid, user_id } = req.body;
+
     try {
         // Validaciones
-        if (!monto || !tipo) {
+        if (!monto || !tipo || !user_id) {
             return res.status(400).json({
-                message: "Error: Algunos campos están vacíos.",
+                message: "Error: Algunos campos están vacíos (monto, tipo, user_id son obligatorios).",
                 error: "Bad request",
                 statusCode: 400
             });
         }
-        if (monto.length > 100 || tipo.length > 50) {
+
+        if (isNaN(monto)) {
             return res.status(400).json({
-                message: "Error: Los atributos superan los límites permitidos.",
+                message: "Error: monto debe ser un número.",
                 error: "Bad request",
                 statusCode: 400
             });
         }
+
         if (is_paid !== undefined && typeof is_paid !== "boolean") {
             return res.status(400).json({
                 message: "Error: is_paid debe ser booleano.",
@@ -36,16 +41,38 @@ export const createCompra = async (req, res) => {
                 statusCode: 400
             });
         }
+
+        // Verificar que exista el usuario
+        const user = await UserModel.findByPk(user_id);
+        if (!user) {
+            return res.status(404).json({
+                message: "Error: Usuario no encontrado.",
+                error: "Not Found",
+                statusCode: 404
+            });
+        }
+
+        // Crear la compra (sin user_id)
         const newCompra = await CompraModel.create({
             monto,
             tipo,
             is_paid
         });
-        res.status(201).json(newCompra);
+
+        // Asociar la compra al usuario mediante la tabla intermedia
+        await user.addCompra(newCompra); // se guarda en User_Compra automáticamente
+
+        res.status(201).json({
+            message: "Compra creada y asociada al usuario correctamente.",
+            compra: newCompra
+        });
+
     } catch (error) {
         res.status(500).json({ error: error.message });
     }
 };
+
+
 
 // Obtener compra por ID
 export const getComprassByID = async (req, res) => {
@@ -128,7 +155,6 @@ export const updateCompras = async (req, res) => {
 // Eliminar compra
 export const deleteCompra = async (req, res) => {
     const compraID = parseInt(req.params.id);
-
     if (isNaN(compraID)) {
         return res.status(400).json({
             message: "Error: El ID debe ser un número.",
@@ -136,7 +162,6 @@ export const deleteCompra = async (req, res) => {
             statusCode: 400
         });
     }
-
     try {
         const compra = await CompraModel.findByPk(compraID);
         if (!compra) {

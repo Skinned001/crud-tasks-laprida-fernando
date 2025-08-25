@@ -9,10 +9,10 @@ import {
 
 const routerEstadisticas = Router();
 
-routerEstadisticas.post('/tasks', createTasks);
-routerEstadisticas.get('/tasks', getAllTasks);
-routerEstadisticas.get('/tasks/:id', getTasksByID);
-routerEstadisticas.put('/tasks/:id', updateTasks);
-routerEstadisticas.delete('/tasks/:id', deleteTasks);
+routerEstadisticas.post('/tasks', createEstadisticas);
+routerEstadisticas.get('/tasks', getAllEstadisticas);
+routerEstadisticas.get('/tasks/:id', getEstadisticasByID);
+routerEstadisticas.put('/tasks/:id', updateEstadisticas);
+routerEstadisticas.delete('/tasks/:id', deleteEstadisticas);
 
 export default routerEstadisticas;

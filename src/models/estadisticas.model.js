@@ -14,7 +14,11 @@ export const EstadisticasModel = sequelize.define("Estadisticas", {
     },
     type_of_user: {
       type: DataTypes.STRING(100),
-      defaultValue: false
+      allowNull: false,
+    },
+    valor:{
+      type: DataTypes.STRING(20),
+      allowNull: false,
     },
   },
   {

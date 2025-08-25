@@ -8,8 +8,8 @@ import './src/models/compra.model.js';
 import routerTask from './src/routes/task.routes.js';
 import routerUser from './src/routes/user.routes.js';
 import routerCompra from './src/routes/compra.routes.js';
-//import routerEstadisticas from './src/routes/compras.routes.js';
-
+import routerEstadisticas from './src/routes/estadisticas.routes.js';
+import routerUserCompra from './src/routes/user_compra.route.js';
 
 const app = express();
 const PORT = 3000;
@@ -18,7 +18,8 @@ app.use(express.json());
 app.use("/api", routerTask);
 app.use("/api", routerUser);
 app.use("/api", routerCompra);
-//app.use("/api", routerEstadisticas);
+app.use("/api", routerEstadisticas);
+app.use("/api", routerUserCompra);
 
 app.get('/', (req, res) => {
   res.send('Servidor funcionando!');
