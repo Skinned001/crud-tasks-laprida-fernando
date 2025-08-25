@@ -29,5 +29,12 @@ export const UserModel = sequelize.define('User', {
 );
 
 // RELACIONES UNO A UNO
-UserModel.belongsTo(EstadisticasModel, { foreignKey: "estadisticas_id", as: "estadisticas" });
+//UserModel.belongsTo(EstadisticasModel, { foreignKey: "estadisticas_id", as: "estadisticas" });
+
+UserModel.belongsTo(EstadisticasModel, {
+  foreignKey: "estadisticas_id", 
+  as: "estadisticas",
+  onDelete: "CASCADE",
+});
+
 EstadisticasModel.hasOne(UserModel, { foreignKey: "estadisticas_id" });
