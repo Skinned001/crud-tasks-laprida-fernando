@@ -1,5 +1,6 @@
 import { CompraModel } from "../models/compra.model.js";
 import { UserModel } from "../models/user.model.js";
+import { UserCompraModel } from "../models/user_compras.model.js";
 
 // Obtener todas las compras
 export const getAllCompras = async (req, res) => {
