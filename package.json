@@ -20,5 +20,13 @@
   },
   "devDependencies": {
     "nodemon": "^3.1.10"
-  }
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Skinned001/crud-tasks-laprida-fernando.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Skinned001/crud-tasks-laprida-fernando/issues"
+  },
+  "homepage": "https://github.com/Skinned001/crud-tasks-laprida-fernando#readme"
 }

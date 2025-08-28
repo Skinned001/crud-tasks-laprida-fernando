@@ -16,7 +16,6 @@ export const getAllCompras = async (req, res) => {
 // Crear una nueva compra y asociarla al usuario mediante la tabla intermedia
 export const createCompra = async (req, res) => {
     const { monto, tipo, is_paid, user_id } = req.body;
-
     try {
         // Validaciones
         if (!monto || !tipo || !user_id) {
@@ -26,7 +25,6 @@ export const createCompra = async (req, res) => {
                 statusCode: 400
             });
         }
-
         if (isNaN(monto)) {
             return res.status(400).json({
                 message: "Error: monto debe ser un número.",
@@ -34,7 +32,6 @@ export const createCompra = async (req, res) => {
                 statusCode: 400
             });
         }
-
         if (is_paid !== undefined && typeof is_paid !== "boolean") {
             return res.status(400).json({
                 message: "Error: is_paid debe ser booleano.",
@@ -42,7 +39,6 @@ export const createCompra = async (req, res) => {
                 statusCode: 400
             });
         }
-
         // Verificar que exista el usuario
         const user = await UserModel.findByPk(user_id);
         if (!user) {
@@ -52,15 +48,13 @@ export const createCompra = async (req, res) => {
                 statusCode: 404
             });
         }
-
-        // Crear la compra (sin user_id)
+        // crear la compra (sin user_id)
         const newCompra = await CompraModel.create({
             monto,
             tipo,
             is_paid
         });
-
-        // Asociar la compra al usuario mediante la tabla intermedia
+        // asociar la compra al usuario mediante la tabla intermedia
         await user.addCompra(newCompra); // se guarda en User_Compra automáticamente
 
         res.status(201).json({

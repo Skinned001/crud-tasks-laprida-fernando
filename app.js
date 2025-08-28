@@ -1,11 +1,12 @@
 import express from 'express';
 import { connectDB } from './src/config/database.js';
+
 import './src/models/task.model.js';
 import './src/models/user.model.js';
 import './src/models/compra.model.js';
 import './src/models/user_compras.model.js'
 // import './src/models/estadisticas.model.js';
-// import './src/models/user_compras.model.js';
+
 import routerTask from './src/routes/task.routes.js';
 import routerUser from './src/routes/user.routes.js';
 import routerCompra from './src/routes/compra.routes.js';
